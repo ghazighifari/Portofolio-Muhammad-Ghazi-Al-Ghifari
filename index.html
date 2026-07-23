@@ -18,13 +18,14 @@
       --surface:   #161922;
       --border:    #252932;
       --accent:    #5b8cff;
+      --accent-glow: rgba(91, 140, 255, 0.25);
       --accent-dim:#1e2d52;
       --text:      #e8eaf0;
       --muted:     #6b7280;
       --mono:      'Space Mono', monospace;
       --sans:      'Space Grotesk', system-ui, sans-serif;
-      --radius:    10px;
-      --transition: 200ms ease;
+      --radius:    12px;
+      --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,18 +40,49 @@
       line-height: 1.65;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    img { display: block; max-width: 100%; }
+    img { display: block; max-width: 100%; height: auto; }
 
     /* ── Layout ─────────────────────────────────────── */
     .container {
-      max-width: 760px;
+      max-width: 780px;
       margin: 0 auto;
       padding: 0 1.5rem;
+    }
+
+    /* ── Status Indicator (Open for Work) ───────────── */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
 
     /* ── Header / Hero ───────────────────────────────── */
@@ -59,17 +91,8 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .tag {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--accent);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-
     h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
       font-weight: 700;
       letter-spacing: -0.02em;
       line-height: 1.1;
@@ -78,58 +101,91 @@
 
     h1 span {
       color: var(--accent);
+      background: linear-gradient(135deg, #5b8cff 0%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .subtitle {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       color: var(--muted);
-      max-width: 520px;
+      max-width: 560px;
       margin-bottom: 2rem;
     }
 
     .btn-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.55rem 1.25rem;
+      gap: 0.5rem;
+      padding: 0.65rem 1.4rem;
       border-radius: var(--radius);
       font-family: var(--sans);
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.95rem;
+      font-weight: 600;
       cursor: pointer;
       border: none;
-      transition: opacity var(--transition), transform var(--transition);
+      transition: all var(--transition);
     }
 
-    .btn:hover { opacity: 0.85; transform: translateY(-1px); text-decoration: none; }
+    .btn:hover { 
+      transform: translateY(-2px); 
+      text-decoration: none; 
+    }
     .btn:active { transform: translateY(0); }
 
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-outline  { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-primary { 
+      background: var(--accent); 
+      color: #fff; 
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(91, 140, 255, 0.4);
+    }
 
-    /* ── Section ─────────────────────────────────────── */
+    .btn-outline { 
+      background: var(--surface); 
+      color: var(--text); 
+      border: 1px solid var(--border); 
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Section & Animation ─────────────────────────── */
     section {
       padding: 3.5rem 0;
       border-bottom: 1px solid var(--border);
     }
 
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 600ms ease, transform 600ms ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .section-label {
       font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--muted);
+      font-size: 0.75rem;
+      color: var(--accent);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       margin-bottom: 1.5rem;
     }
 
     h2 {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: 600;
       letter-spacing: -0.01em;
       margin-bottom: 0.5rem;
@@ -137,11 +193,11 @@
 
     p { color: var(--muted); }
 
-    /* ── Project Cards ───────────────────────────────── */
+    /* ── Project Cards & Visual Image ────────────────── */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
       margin-top: 1.5rem;
     }
 
@@ -149,25 +205,49 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.4rem 1.5rem;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      transition: border-color var(--transition), transform var(--transition);
+      transition: all var(--transition);
     }
 
     .card:hover {
       border-color: var(--accent);
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px var(--accent-glow);
+    }
+
+    .card-img-wrapper {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: var(--border);
+      position: relative;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 400ms ease;
+    }
+
+    .card:hover .card-img {
+      transform: scale(1.05);
+    }
+
+    .card-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
     }
 
     .card-title {
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 600;
       color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
     }
 
     .card-title a { color: inherit; }
@@ -185,52 +265,78 @@
       font-size: 0.7rem;
       background: var(--accent-dim);
       color: var(--accent);
-      border-radius: 4px;
-      padding: 2px 8px;
-      margin-top: 0.25rem;
+      border-radius: 6px;
+      padding: 3px 10px;
+      margin-top: 0.5rem;
       width: fit-content;
+      transition: all var(--transition);
     }
 
-    /* ── About ───────────────────────────────────────── */
+    .card:hover .chip {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ── About & Interactive Skills ──────────────────── */
     .skill-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 1rem;
+      gap: 0.6rem;
+      margin-top: 1.25rem;
     }
 
     .skill-list span {
       font-family: var(--mono);
       font-size: 0.8rem;
       color: var(--muted);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 3px 10px;
+      border-radius: 6px;
+      padding: 5px 12px;
+      transition: all var(--transition);
+      cursor: default;
     }
 
-    /* ── Contact ─────────────────────────────────────── */
+    .skill-list span:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px var(--accent-glow);
+    }
+
+    /* ── Contact Links ───────────────────────────────── */
     .contact-links {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-top: 1rem;
+      margin-top: 1.25rem;
     }
 
-    .contact-links a {
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
       font-family: var(--mono);
       font-size: 0.85rem;
-      color: var(--muted);
+      color: var(--text);
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      transition: color var(--transition);
+      gap: 0.5rem;
+      transition: all var(--transition);
     }
 
-    .contact-links a:hover { color: var(--accent); text-decoration: none; }
+    .contact-card:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+      text-decoration: none;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
 
     /* ── Footer ──────────────────────────────────────── */
     footer {
-      padding: 2rem 0;
+      padding: 2.5rem 0;
       text-align: center;
     }
 
@@ -245,24 +351,23 @@
       header { padding: 3.5rem 0 2.5rem; }
       .btn-group { flex-direction: column; }
       .btn { justify-content: center; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition: none !important; }
+      .grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ── Hero ──────────────────────────────────────── -->
+  <!-- ── Hero Section ────────────────────────────────── -->
   <header>
-    <div class="container">
-      <p class="tag">instagram.com/digisoloarts</p>
+    <div class="container fade-in">
+      <div class="status-badge">
+        <span class="status-dot"></span> Available for Projects & Freelance
+      </div>
       <h1>Halo, saya <span>Muhammad Ghazi Al Ghifari</span></h1>
       <p class="subtitle">
         Graphic Designer & Visual Creator. Saya berfokus pada perancangan brand identity, 
-        desain grafis 2D, serta produksi konten audio-visual yang komunikatif[cite: 1].
+        desain grafis 2D, serta produksi konten audio-visual yang komunikatif.
       </p>
       <div class="btn-group">
         <a class="btn btn-primary" href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">
@@ -275,57 +380,81 @@
     </div>
   </header>
 
-  <!-- ── Projects ───────────────────────────────────── -->
+  <!-- ── Projects Section ────────────────────────────── -->
   <section id="proyek">
-    <div class="container">
-      <p class="section-label">Proyek Terpilih</p>
+    <div class="container fade-in">
+      <p class="section-label">// Proyek Terpilih</p>
       <div class="grid">
 
+        <!-- Project 1 -->
         <article class="card">
-          <div class="card-title">
-            🎨 <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Brand Identity — CV. Athar Sukses Abadi</a>
+          <div class="card-img-wrapper">
+            <img class="card-img" src="https://images.unsplash.com/photo-1600132806370-bf17e65e942f?q=80&w=800&auto=format&fit=crop" alt="Brand Identity" />
           </div>
-          <p class="card-desc">Pembangunan identitas visual perusahaan logistik & sparepart dari nol[cite: 1]. Meliputi Logo System, GSM, Color Palette, hingga aplikasi desain ke media fisik[cite: 1].</p>
-          <span class="chip">Branding / Identity</span>
+          <div class="card-body">
+            <div class="card-title">
+              <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Brand Identity — CV. Athar Sukses Abadi</a>
+            </div>
+            <p class="card-desc">Pembangunan identitas visual dari nol. Meliputi Logo System, GSM, Color Palette, hingga penerapan media fisik.</p>
+            <span class="chip">Branding / Identity</span>
+          </div>
         </article>
 
+        <!-- Project 2 -->
         <article class="card">
-          <div class="card-title">
-            🏛 <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Logo HUT PNM Ke-26</a>
+          <div class="card-img-wrapper">
+            <img class="card-img" src="https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=800&auto=format&fit=crop" alt="Logo Design" />
           </div>
-          <p class="card-desc">Perancangan logo spesial peringatan ulang tahun ke-26 untuk PT Permodalan Nasional Madani (PNM)[cite: 1].</p>
-          <span class="chip">Logo Design</span>
+          <div class="card-body">
+            <div class="card-title">
+              <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Logo HUT PNM Ke-26</a>
+            </div>
+            <p class="card-desc">Perancangan logo spesial peringatan ulang tahun ke-26 untuk PT Permodalan Nasional Madani (PNM).</p>
+            <span class="chip">Logo Design</span>
+          </div>
         </article>
 
+        <!-- Project 3 -->
         <article class="card">
-          <div class="card-title">
-            📂 <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Logofolio & Visual Assets</a>
+          <div class="card-img-wrapper">
+            <img class="card-img" src="https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=800&auto=format&fit=crop" alt="Logofolio" />
           </div>
-          <p class="card-desc">Eksplorasi identitas visual untuk berbagai brand, seperti Adaptasi, Peafowl Waterdrop, hingga Cafepod Coffee & Eatery[cite: 1].</p>
-          <span class="chip">Graphic Design</span>
+          <div class="card-body">
+            <div class="card-title">
+              <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Logofolio & Visual Assets</a>
+            </div>
+            <p class="card-desc">Eksplorasi identitas visual untuk berbagai brand, seperti Adaptasi, Peafowl Waterdrop, hingga Cafepod Coffee.</p>
+            <span class="chip">Graphic Design</span>
+          </div>
         </article>
 
+        <!-- Project 4 -->
         <article class="card">
-          <div class="card-title">
-            📱 <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Social Media Content & Feeds</a>
+          <div class="card-img-wrapper">
+            <img class="card-img" src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop" alt="Social Media" />
           </div>
-          <p class="card-desc">Penyusunan tata letak dan visual promosi media sosial yang konsisten untuk menyampaikan pesan brand secara efektif[cite: 1].</p>
-          <span class="chip">Social Media</span>
+          <div class="card-body">
+            <div class="card-title">
+              <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">Social Media Content & Feeds</a>
+            </div>
+            <p class="card-desc">Penyusunan tata letak dan visual promosi media sosial yang konsisten untuk menyampaikan pesan brand.</p>
+            <span class="chip">Social Media</span>
+          </div>
         </article>
 
       </div>
     </div>
   </section>
 
-  <!-- ── About ──────────────────────────────────────── -->
+  <!-- ── About Section ───────────────────────────────── -->
   <section id="tentang">
-    <div class="container">
-      <p class="section-label">Tentang</p>
+    <div class="container fade-in">
+      <p class="section-label">// Tentang Saya</p>
       <h2>Siapa saya?</h2>
       <p style="margin-top:.75rem">
-        Saya seorang kreator visual dengan latar belakang kuat di bidang desain grafis, audio, dan video editing[cite: 1]. 
+        Saya seorang kreator visual dengan latar belakang di bidang desain grafis, audio, dan video editing. 
         Saya terbiasa mengeksplorasi ide kreatif, melakukan <strong style="color:var(--text)">visual storytelling</strong>, 
-        serta membangun sistem identitas merek yang memiliki nilai fungsional dan estetika[cite: 1].
+        serta membangun sistem identitas merek yang fungsional dan estetis.
       </p>
       <div class="skill-list">
         <span>Adobe Photoshop</span>
@@ -339,35 +468,52 @@
     </div>
   </section>
 
-  <!-- ── Contact ────────────────────────────────────── -->
+  <!-- ── Contact Section ─────────────────────────────── -->
   <section id="kontak">
-    <div class="container">
-      <p class="section-label">Kontak</p>
+    <div class="container fade-in">
+      <p class="section-label">// Kontak</p>
       <h2>Mari terhubung</h2>
-      <p style="margin-top:.5rem">Terbuka untuk kolaborasi proyek, peluang kerja, atau diskusi kreatif[cite: 1].</p>
+      <p style="margin-top:.5rem">Terbuka untuk kolaborasi proyek, peluang kerja, atau diskusi kreatif.</p>
       <div class="contact-links">
-        <a href="mailto:ghazialghifari452@gmail.com">
+        <a class="contact-card" href="mailto:ghazialghifari452@gmail.com">
           ✉ ghazialghifari452@gmail.com
         </a>
-        <a href="https://wa.me/6281394514085" target="_blank" rel="noopener">
+        <a class="contact-card" href="https://wa.me/6281394514085" target="_blank" rel="noopener">
           📱 +62 813 94514085
         </a>
-        <a href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">
-          🎨 Instagram (@digisoloarts)
+        <a class="contact-card" href="https://instagram.com/digisoloarts" target="_blank" rel="noopener">
+          🎨 @digisoloarts
         </a>
-        <a href="https://instagram.com/ghazighfr" target="_blank" rel="noopener">
-          👤 Instagram (@ghazighfr)
+        <a class="contact-card" href="https://instagram.com/ghazighfr" target="_blank" rel="noopener">
+          👤 @ghazighfr
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ── Footer ─────────────────────────────────────── -->
+  <!-- ── Footer ──────────────────────────────────────── -->
   <footer>
     <div class="container">
-      <p>© 2026 Muhammad Ghazi Al Ghifari · Dibuat dengan HTML & CSS Murni</p>
+      <p>© 2026 Muhammad Ghazi Al Ghifari · Interactive Digital Portfolio</p>
     </div>
   </footer>
+
+  <!-- ── Interactive JavaScript (Scroll Animation) ───── -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-in').forEach(section => {
+        observer.observe(section);
+      });
+    });
+  </script>
 
 </body>
 </html>
